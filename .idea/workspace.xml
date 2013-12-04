@@ -28,7 +28,7 @@
       <file leaf-file-name="composer.json" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/composer.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="34" selection-start="36" selection-end="36" vertical-scroll-proportion="0.029010238" vertical-offset="0" max-vertical-offset="586">
+            <state line="4" column="25" selection-start="141" selection-end="141" vertical-scroll-proportion="0.11604095" vertical-offset="0" max-vertical-offset="586">
               <folding />
             </state>
           </provider>
@@ -191,7 +191,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/composer.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="34" selection-start="36" selection-end="36" vertical-scroll-proportion="0.029010238" vertical-offset="0" max-vertical-offset="586">
+        <state line="4" column="25" selection-start="141" selection-end="141" vertical-scroll-proportion="0.11604095" vertical-offset="0" max-vertical-offset="586">
           <folding />
         </state>
       </provider>
