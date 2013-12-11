@@ -23,9 +23,9 @@ class Queue
 	/**
 	 * Construct
 	 *
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 */
-	public function __construct(\stdClass $config)
+	public function __construct($config)
 	{
 		$this->_config = $config;
 	}
@@ -38,7 +38,7 @@ class Queue
 	public function getAdapterQueue()
 	{
 		if (!$this->_adapterQueue) {
-			$this->_adapterQueue = $this->_config->storageQueue;
+			$this->_adapterQueue = $this->_config['storageQueue'];
 			if (!($this->_adapterQueue instanceof AdapterInterface)) {
 				throw new \Exception("Not valid QueueCenter storage adapter!");
 			}
@@ -55,7 +55,7 @@ class Queue
 	public function getAdapterQueueRouters()
 	{
 		if (!$this->_adapterQueueRouters) {
-			$this->_adapterQueueRouters = $this->_config->storageQueueRouters;
+			$this->_adapterQueueRouters = $this->_config['storageQueueRouters'];
 			if (!($this->_adapterQueueRouters instanceof AdapterInterface)) {
 				throw new \Exception("Not valid QueueCenter storage adapter!");
 			}
@@ -77,7 +77,7 @@ class Queue
 			return false;
 		}
 		
-		return $this->_adapterQueue->add(["user_id" => $userId, "name" => $name]);
+		return $this->_adapterQueue->add(array("user_id" => $userId, "name" => $name));
 	}
 	
 	/**
@@ -94,7 +94,7 @@ class Queue
 			return false;
 		}
 		
-		return $this->_adapterQueueRouters->add(["queue_id" => $queueId, "exchange_id" => $exchangeId, "routing_key" => $routingKey]);
+		return $this->_adapterQueueRouters->add(array("queue_id" => $queueId, "exchange_id" => $exchangeId, "routing_key" => $routingKey));
 	}
 			
 	
@@ -127,7 +127,7 @@ class Queue
 	 */
 	public function removeQueueRouter($queueId, $exchangeId = null, $routingKey = null)
 	{
-		if(!($routers = $this->getQueueRouters($queueId, $exchangeId, $routingKey))) {
+		if (!($routers = $this->getQueueRouters($queueId, $exchangeId, $routingKey))) {
 			return false;
 		}
 		foreach ($routers as $router) {
@@ -174,7 +174,7 @@ class Queue
 	public function getById($id)
 	{
 		$adapter = $this->getAdapterQueue();
-		if (!($queue = $adapter->get(["id" => $id]))) {
+		if (!($queue = $adapter->get(array("id" => $id)))) {
 			return false;
 		}
 	
@@ -190,7 +190,7 @@ class Queue
 	public function getByName($name)
 	{
 		$adapter = $this->getAdapterQueue();
-		if (!($queue = $adapter->get(["name" => $name]))) {
+		if (!($queue = $adapter->get(array("name" => $name)))) {
 			return false;
 		}
 		
@@ -207,7 +207,7 @@ class Queue
 	{
 		$adapter = $this->getAdapterQueueRouters();
 		$queues = [];
-		if (!($routers = $adapter->get(['exchange_id' => $exchangeId]))) {
+		if (!($routers = $adapter->get(array('exchange_id' => $exchangeId)))) {
 			return $queues;
 		}
 		if (!isset($routers[0])) {
@@ -231,7 +231,7 @@ class Queue
 	public function getUserQueues($userId)
 	{
 		$adapter = $this->getAdapterQueue();
-		if (!($queues = $adapter->get(['user_id' => $userId]))) {
+		if (!($queues = $adapter->get(array('user_id' => $userId)))) {
 			return [];
 		}
 		if (!isset($queues['0'])) {

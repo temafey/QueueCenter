@@ -24,9 +24,9 @@ class Handler
 	/**
 	 * Construct
 	 *
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 */
-	public function __construct(\stdClass $config)
+	public function __construct($config)
 	{
 		$this->_config = $config;
 	}
@@ -39,7 +39,7 @@ class Handler
 	 */
 	public function getHandler($type)
 	{
-		$handler = $this->_config->{self::HANDLER_CALLBACK_PREFIX.$this->_normalizeHandlerType(ucfirst($type))};
+		$handler = $this->_config[self::HANDLER_CALLBACK_PREFIX.$this->_normalizeHandlerType(ucfirst($type))];
 		if (!($handler instanceof HandlerCallbackInterface)) {
 			throw new \Exception("Not valid QueueCenter message handler!");
 		}
@@ -56,7 +56,7 @@ class Handler
 	 */
 	public function addHandler($type, \QueueCenter\Queue\HandlerCallbackInterface $handler)
 	{
-		$this->_config->{self::HANDLER_CALLBACK_PREFIX.$this->_normalizeHandlerType(ucfirst($type))} = $handler;
+		$this->_config[self::HANDLER_CALLBACK_PREFIX.$this->_normalizeHandlerType(ucfirst($type))] = $handler;
 		return $this;
 	}
 	
@@ -92,7 +92,7 @@ class Handler
 			$queues = [$storage->getById($userId)];			
 		} elseif (null !== $userId) {
 			$queues = $storage->getUserQueues($userId);
-		} elseif(null !== $exchangeId) {
+		} elseif (null !== $exchangeId) {
 			$queues = $storage->getExchangeQueues($exchangeId);
 		}
 		foreach ($queues as $queue) {

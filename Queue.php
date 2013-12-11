@@ -1,4 +1,7 @@
 <?php
+/**
+ * @namespace
+ */
 namespace QueueCenter;
 
 use \QueueCenter\Storage;
@@ -34,28 +37,28 @@ class Queue
 	 * Queue options
 	 * @param array
 	 */
-	protected $_options = [
+	protected $_options = array(
 		'name' => '',
 		'passive' => false,
 		'durable' => true,
 		'exclusive' => false,
 		'auto_delete' => false,
 		'nowait' => false,
-		'arguments' => [
+		'arguments' => array(
 	        "x-dead-letter-exchange" => array("S", "exchange-die"),
 	        /*"x-message-ttl" => array("I", 10000), //milliseconds
 	        "x-expires" => array("I", 16000)*/
-	    ],
+        ),
 		'ticket' => null
-	];
+    );
 	
 	/**
 	 * Construct
 	 * 
 	 * @param string $name
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 */
-	public function __construct($name, \stdClass $config)
+	public function __construct($name, $config)
 	{
 		$this->_name = $name;
 		$this->_config = $config;
@@ -69,15 +72,15 @@ class Queue
 	public function getAdapter()
 	{
 		if (!$this->_adapter) {
-			switch ($this->_config->adapter) {
+			switch ($this->_config['adapter']) {
 				case 'rabbit':
 					$connection = array(
-						'type' => $this->_config->type,
-						'host' => $this->_config->host,
-						'port' => $this->_config->port,
-						'username' => $this->_config->username,
-						'password' => $this->_config->password,
-						'vhost' => $this->_config->vhost
+						'type' => $this->_config['type'],
+						'host' => $this->_config['host'],
+						'port' => $this->_config['port'],
+						'username' => $this->_config['username'],
+						'password' => $this->_config['password'],
+						'vhost' => $this->_config['vhost']
 					);
 					$this->_adapter = new \QueueCenter\Adapter\RabbitMQ($connection);
 					break;
@@ -226,12 +229,12 @@ class Queue
 	/**
 	 * Add new user queue
 	 *
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 * @param integer $userId
 	 * @param string $name
 	 * @return boolean
 	 */
-	public static function addUserQueue(\stdClass $config, $userId, $name)
+	public static function addUserQueue($config, $userId, $name)
 	{
 		$storage = new Storage\Queue($config);
 		$fullName = self::generateUserQueueName($userId, $name);
@@ -247,18 +250,18 @@ class Queue
 	/**
 	 * Bind exchange to user queue
 	 * 
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 * @param integer $userId
 	 * @param string $name
 	 * @param integer $exchangeId
 	 * @param string $routingKey
 	 * @return boolean
 	 */
-	public static function bindUserQueue(\stdClass $config, $userId, $name, $exchangeId, $routingKey = "*") 
+	public static function bindUserQueue($config, $userId, $name, $exchangeId, $routingKey = "*")
 	{
 		$storage = new Storage\Queue($config);
 		$fullName = self::generateUserQueueName($userId, $name);
-		if(!($queue = $storage->getByName($fullName))) {
+		if (!($queue = $storage->getByName($fullName))) {
 			if (!self::addUserQueue($config, $userId, $name)) {
 				return false;
 			}
@@ -282,18 +285,18 @@ class Queue
 	/**
 	 * Unbind exchange from user queue
 	 *
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 * @param integer $userId
 	 * @param string $name
 	 * @param integer $exchangeId
 	 * @param string $routingKey
 	 * @return boolean
 	 */
-	public static function unbindUserQueue(\stdClass $config, $userId, $name, $exchangeId, $routingKey = "*")
+	public static function unbindUserQueue($config, $userId, $name, $exchangeId, $routingKey = "*")
 	{
 		$storage = new Storage\Queue($config);
 		$fullName = self::generateUserQueueName($userId, $name);
-		if(!($queue = $storage->getByName($fullName))) {
+		if (!($queue = $storage->getByName($fullName))) {
 			return false;
 		}
 		if (!$storage->removeQueueRouter($queue['id'], $exchangeId, $routingKey)) {

@@ -39,7 +39,7 @@ class Exchange
 	 * Queue options
 	 * @param array
 	 */
-	protected $_options = [
+	protected $_options = array(
 		'passive' => false,
 		'durable' => true,
 		'auto_delete' => false,
@@ -47,15 +47,15 @@ class Exchange
 		'nowait' => false,
 		'arguments' => null,
 		'ticket' => null
-	];
+    );
 	
 	/**
 	 * Construct
 	 * 
 	 * @param string $name
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 */
-	public function __construct($name, \stdClass $config)
+	public function __construct($name, $config)
 	{
 		$this->_name = $name;
 		$this->_config = $config;
@@ -69,19 +69,22 @@ class Exchange
 	public function getAdapter()
 	{
 		if (!$this->_adapter) {
-			switch ($this->_config->adapter) {
+			switch ($this->_config['adapter']) {
 				case 'rabbit':
 					$connection = array(
-						'type' => $this->_config->type,
-						'host' => $this->_config->host,
-						'port' => $this->_config->port,
-						'username' => $this->_config->username,
-						'password' => $this->_config->password,
-						'vhost' => $this->_config->vhost
+						'type' => $this->_config['type'],
+						'host' => $this->_config['host'],
+						'port' => $this->_config['port'],
+						'username' => $this->_config['username'],
+						'password' => $this->_config['password'],
+						'vhost' => $this->_config['vhost']
 					);
 					$this->_adapter = new \QueueCenter\Adapter\RabbitMQ($connection);
 					break;
 			}
+            if (isset($this->_config['exchangeType'])) {
+                $this->_type = $this->_config['exchangeType'];
+            }
 			$this->_declare();
 		}
 	
@@ -128,12 +131,12 @@ class Exchange
 	/**
 	 * Add new user exchange
 	 * 
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 * @param integer $userId
 	 * @param string $name
 	 * @return boolean
 	 */
-	public static function addUserExchange(\stdClass $config, $userId, $name)
+	public static function addUserExchange($config, $userId, $name)
 	{
 		$storage = new Storage\Exchange($config);
 		$fullName = self::generateUserExchangeName($userId, $name);
@@ -149,7 +152,7 @@ class Exchange
 	/**
 	 * Publish message to user exchange by router
 	 * 
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 * @param integer $userId
 	 * @param string $name
 	 * @param string|array|object $message
@@ -157,7 +160,7 @@ class Exchange
 	 * @param string $routingKey
 	 * @return boolean
 	 */
-	public static function publishToUserExchange(\stdClass $config, $userId, $name, $message, $handler, $routingKey = "*")
+	public static function publishToUserExchange($config, $userId, $name, $message, $handler, $routingKey = "*")
 	{
 		$storage = new Storage\Exchange($config);
 		$fullName = self::generateUserExchangeName($userId, $name);
@@ -167,7 +170,7 @@ class Exchange
 			}
 		}
 		$exchange = new self($fullName, $config);		
-		$exchange->publish(['publish' => time(), 'handler' => $handler, 'message' => $message], $routingKey);
+		$exchange->publish(array('publish' => time(), 'handler' => $handler, 'message' => $message), $routingKey);
 
 		return true;
 	}

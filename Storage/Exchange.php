@@ -25,9 +25,9 @@ class Exchange
 	/**
 	 * Construct
 	 *
-	 * @param \stdClass $config
+	 * @param mixed $config
 	 */
-	public function __construct(\stdClass $config)
+	public function __construct($config)
 	{
 		$this->_config = $config;
 	}
@@ -40,7 +40,7 @@ class Exchange
 	public function getAdapter()
 	{
 		if (!$this->_adapter) {
-			$this->_adapter = $this->_config->storageExchange;
+			$this->_adapter = $this->_config['storageExchang'];
 			if (!($this->_adapter instanceof AdapterInterface)) {
 				throw new \Exception("Not valid QueueCenter storage adapter!");
 			}
@@ -60,7 +60,7 @@ class Exchange
 		if ($this->getByName($name)) {
 			return false;
 		}
-		$result = $this->_adapter->add(['user_id' => $userId, 'name' => $name]);
+		$result = $this->_adapter->add(array('user_id' => $userId, 'name' => $name));
 
 		return $result;
 	}
@@ -76,7 +76,7 @@ class Exchange
 		if (!$this->getById($id)) {
 			return false;
 		}
-		$this->_adapter->remove(['id' => $id]);
+		$this->_adapter->remove(array('id' => $id));
 		
 		return true;
 	}
@@ -90,7 +90,7 @@ class Exchange
 	public function getByName($name)
 	{
 		$adapter = $this->getAdapter();
-		if (!($exchange = $adapter->get(["name" => $name]))) {
+		if (!($exchange = $adapter->get(array("name" => $name)))) {
 			return false;
 		}
 		
@@ -106,7 +106,7 @@ class Exchange
 	public function getById($id)
 	{
 		$adapter = $this->getAdapter();
-		if (!($exchange = $adapter->get(["id" => $id]))) {
+		if (!($exchange = $adapter->get(array("id" => $id)))) {
 			return false;
 		}
 	
@@ -133,7 +133,7 @@ class Exchange
 	public function getUserExchanges($userId)
 	{
 		$adapter = $this->getAdapter();
-		if (!($exchanges = $adapter->get(['user_id' => $userId]))) {
+		if (!($exchanges = $adapter->get(array('user_id' => $userId)))) {
 			return [];
 		}
 		
