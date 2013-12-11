@@ -2,7 +2,7 @@
     "name": "temafey/queue-center",
     "type": "library",
     "description": "Message queue exchange managment",
-    "keywords": ["queue", "exchange","rabbitmq"],
+    "keywords": ["queue", "exchange","rabbitmq", "library", "AMQPPHP", "AMQPLib", "Thumper", "Queue Center"],
     "homepage": "https://github.com/temafey/QueueCenter",
     "license": "MIT",
     "require": {
