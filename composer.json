@@ -7,6 +7,6 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "videlalvaro/thumper": "dev-master"
+        "videlalvaro/thumper": "~0.3.1"
     }
 }
