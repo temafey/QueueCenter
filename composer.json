@@ -8,5 +8,10 @@
     "require": {
         "php": ">=5.3.0",
         "videlalvaro/thumper": "~0.3.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "QueueCenter": "/"
+        }
     }
 }
