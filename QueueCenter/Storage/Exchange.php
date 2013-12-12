@@ -40,7 +40,7 @@ class Exchange
 	public function getAdapter()
 	{
 		if (!$this->_adapter) {
-			$this->_adapter = $this->_config['storageExchang'];
+			$this->_adapter = $this->_config['storageExchange'];
 			if (!($this->_adapter instanceof AdapterInterface)) {
 				throw new \Exception("Not valid QueueCenter storage adapter!");
 			}
