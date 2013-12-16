@@ -94,7 +94,9 @@ class Handler
 			$queues = $storage->getUserQueues($userId);
 		} elseif (null !== $exchangeId) {
 			$queues = $storage->getExchangeQueues($exchangeId);
-		}
+		} else {
+            throw new \Exception('Not set any params for handle queues');
+        }
 		foreach ($queues as $queue) {
 			$this->_consumeQueueMessages($queue);
 		}
