@@ -7,11 +7,9 @@ namespace QueueCenter;
 use \QueueCenter\Storage;
 
 /**
+ * Class Queue
  *
- *
- *
- * @category   QueueCenter
- * @package    QueueCenter
+ * @package QueueCenter
  */
 class Queue
 {	
@@ -199,6 +197,8 @@ class Queue
 	
 	/**
 	 * Get messages
+     *
+     * @return \PhpAmqpLib\Wire\GenericContent\AMQPMessage
 	 */
 	public function get()
 	{

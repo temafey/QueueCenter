@@ -5,11 +5,10 @@ use \QueueCenter\Queue,
 	\QueueCenter\Storage\Queue as Storage;
 
 /**
+ * Class Handler
  *
- *
- *
- * @category   Storage
- * @package    QueueCenter
+ * @category Queue
+ * @package QueueCenter
  */
 class Handler
 {	
@@ -34,7 +33,7 @@ class Handler
 	/**
 	 * Return data handler
 	 *
-	 * @param string type
+	 * @param string $type
 	 * @return \QueueCenter\Queue\HandlerCallbackInterface
 	 */
 	public function getHandler($type)
@@ -125,7 +124,7 @@ class Handler
 	 * 
 	 * @param integer $userId
 	 * @param integer $queueId
-	 * @param unknown $message
+	 * @param \PhpAmqpLib\Wire\GenericContent\AMQPMessage $message
 	 * @return boolean
 	 */
 	protected function _handle($userId, $queueId, $message)

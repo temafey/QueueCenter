@@ -2,16 +2,23 @@
 namespace QueueCenter\Storage;
 
 /**
- *
- *
+ * Class Queue
  *
  * @category   Storage
  * @package    QueueCenter
  */
 class Queue
-{	
-	protected $_adapterQueue;
-	
+{
+    /**
+     * Queue storage adatepr
+     * @var \QueueCenter\Storage\AdapterInterface
+     */
+    protected $_adapterQueue;
+
+    /**
+     * Queue to exchange storage adatepr
+     * @var \QueueCenter\Storage\AdapterInterface
+     */
 	protected $_adapterQueueRouters;
 
 	/**
@@ -33,7 +40,7 @@ class Queue
 	/**
 	 * Return queue storage adapter
 	 *
-	 * @return 
+	 * @return \QueueCenter\Storage\AdapterInterface
 	 */
 	public function getAdapterQueue()
 	{
@@ -50,7 +57,7 @@ class Queue
 	/**
 	 * Return storage adapter
 	 *
-	 * @return
+	 * @return \QueueCenter\Storage\AdapterInterface
 	 */
 	public function getAdapterQueueRouters()
 	{
@@ -77,7 +84,7 @@ class Queue
 			return false;
 		}
 		
-		return $this->_adapterQueue->add(array("user_id" => $userId, "name" => $name));
+		return $this->_adapterQueue->add(["user_id" => $userId, "name" => $name]);
 	}
 	
 	/**
@@ -94,7 +101,7 @@ class Queue
 			return false;
 		}
 		
-		return $this->_adapterQueueRouters->add(array("queue_id" => $queueId, "exchange_id" => $exchangeId, "routing_key" => $routingKey));
+		return $this->_adapterQueueRouters->add(["queue_id" => $queueId, "exchange_id" => $exchangeId, "routing_key" => $routingKey]);
 	}
 			
 	

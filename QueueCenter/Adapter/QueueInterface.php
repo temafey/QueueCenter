@@ -1,6 +1,12 @@
 <?php
 namespace QueueCenter\Adapter;
 
+/**
+ * Interface QueueInterface
+ *
+ * @category Adapter
+ * @package QueueCenter
+ */
 interface QueueInterface 
 {
 	/*

@@ -2,11 +2,9 @@
 namespace QueueCenter;
 
 /**
+ * Class Exchange
  *
- *
- *
- * @category   QueueCenter
- * @package    QueueCenter
+ * @package QueueCenter
  */
 class Exchange
 {

@@ -5,8 +5,7 @@ use PhpAmqpLib\Connection as Connection,
 	PhpAmqpLib\Message as Message;
 
 /**
- *
- *
+ * Class RabbitMQ
  *
  * @category   Adapter
  * @package    QueueCenter
@@ -84,8 +83,17 @@ class RabbitMQ implements QueueInterface
 	 * @param string $arguments
 	 * @param string $ticket
 	 */
-	public function exchangeDeclare($exchange, $type, $passive = false, $durable = false, $auto_delete = true, $internal = false,  $nowait = false, $arguments = null,  $ticket = null) 
-	{
+	public function exchangeDeclare(
+        $exchange,
+        $type,
+        $passive = false,
+        $durable = false,
+        $auto_delete = true,
+        $internal = false,
+        $nowait = false,
+        $arguments = null,
+        $ticket = null
+    ) {
 		return $this->_channel->exchange_declare($exchange, $type, $passive, $durable, $auto_delete, $internal, $nowait, $arguments, $ticket);
 	}
 	
@@ -99,14 +107,21 @@ class RabbitMQ implements QueueInterface
 	 * @param string $immediate
 	 * @param string $ticket
 	 */
-	public function exchangePublish($message, $exchange, $routingKey = "*", $mandatory = false, $immediate = false,  $ticket = null) 
-	{
+	public function exchangePublish(
+        $message,
+        $exchange,
+        $routingKey = "*",
+        $mandatory = false,
+        $immediate = false,
+        $ticket = null
+    ) {
 		$msg = new Message\AMQPMessage($message, ['content_type' => 'text/plain', 'delivery_mode' => 2]);
 		return $this->_channel->basic_publish($msg, $exchange, $routingKey, $mandatory, $immediate,  $ticket);
 	}
 	
 	/**
-	 * 
+	 * Remove user exchange
+     *
 	 * @param string $exchange
 	 */
 	public function exchangeDelete($exchange) 
@@ -115,43 +130,74 @@ class RabbitMQ implements QueueInterface
 	}
 	
 	/**
-	 * 
-	 * @param unknown $destination
-	 * @param unknown $source
+	 * Bind user exchange
+     *
+	 * @param string $destination
+	 * @param string $source
 	 * @param string $routingKey
 	 * @param string $nowait
 	 * @param string $arguments
 	 * @param string $ticket
 	 */
-	public function exchangeBind($destination, $source, $routingKey = "*", $nowait = false, $arguments = null, $ticket = null) 
-	{
+	public function exchangeBind(
+        $destination,
+        $source,
+        $routingKey = "*",
+        $nowait = false,
+        $arguments = null,
+        $ticket = null
+    ) {
 		return $this->_channel->exchange_bind($destination, $source, $routingKey, $nowait, $arguments, $ticket);
 	}
 	
 	/**
-	 * 
-	 * @param unknown $source
-	 * @param unknown $destination
+	 * Unbind user exchange
+     *
+	 * @param string $source
+	 * @param string $destination
 	 * @param string $routingKey
 	 * @param string $arguments
 	 * @param string $ticket
 	 */
-	public function exchangeUnbind($source, $destination, $routingKey = "*", $arguments = null, $ticket = null) 
-	{
+	public function exchangeUnbind(
+        $source,
+        $destination,
+        $routingKey = "*",
+        $arguments = null,
+        $ticket = null
+    ) {
 		return $this->_channel->exchange_unbind($source, $destination, $routingKey, $arguments, $ticket);
-	}	
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see \QueueCenter\Adapter\QueuInterface::queueDeclare()
-	 */
-	public function queueDeclare($queue, $passive = false, $durable = false, $exclusive = false, $auto_delete = true, $nowait = false,  $arguments = null, $ticket = null) 
-	{
+	}
+
+    /**
+     * Declare queue
+     *
+     * @param string $queue
+     * @param bool $passive
+     * @param bool $durable
+     * @param bool $exclusive
+     * @param bool $auto_delete
+     * @param bool $nowait
+     * @param null $arguments
+     * @param null $ticket
+     * @return mixed
+     */
+    public function queueDeclare(
+        $queue,
+        $passive = false,
+        $durable = false,
+        $exclusive = false,
+        $auto_delete = true,
+        $nowait = false,
+        $arguments = null,
+        $ticket = null
+    ) {
 		return $this->_channel->queue_declare($queue, $passive, $durable, $exclusive, $auto_delete, $nowait,  $arguments, $ticket);
 	}
 	
 	/**
-	 * 
+	 * Bind queue to user exchange
+     *
 	 * @param string $queue
 	 * @param string $exchange
 	 * @param string $routingKey
@@ -159,39 +205,58 @@ class RabbitMQ implements QueueInterface
 	 * @param string $arguments
 	 * @param string $ticket
 	 */
-	public function queueBind($queue, $exchange, $routingKey = "*", $nowait = false, $arguments = null, $ticket = null) 
-	{
+	public function queueBind(
+        $queue,
+        $exchange,
+        $routingKey = "*",
+        $nowait = false,
+        $arguments = null,
+        $ticket = null
+    ) {
 		return $this->_channel->queue_bind($queue, $exchange, $routingKey, $nowait, $arguments, $ticket);
 	}
 	
 	/**
-	 * 
+	 * Unbind queue from user exchange
+     *
 	 * @param string $queue
 	 * @param string $exchange
 	 * @param string $routingKey
 	 * @param string $arguments
 	 * @param string $ticket
 	 */
-	public function queueUnBind($queue, $exchange, $routingKey = "*", $arguments = null, $ticket = null) 
-	{
+	public function queueUnBind(
+        $queue,
+        $exchange,
+        $routingKey = "*",
+        $arguments = null,
+        $ticket = null
+    ) {
 		return $this->_channel->queue_unbind($queue, $exchange, $routingKey, $arguments, $ticket);
 	}
 	
 	/**
-	 * 
+	 * Delete queue
+     *
 	 * @param string $queue
 	 * @param string $if_unused
 	 * @param string $if_empty
 	 * @param string $nowait
 	 * @param string $ticket
 	 */
-	public function queueDelete($queue, $if_unused = false, $if_empty = false, $nowait = false, $ticket = null) 
-	{
+	public function queueDelete(
+        $queue,
+        $if_unused = false,
+        $if_empty = false,
+        $nowait = false,
+        $ticket = null
+    ) {
 		return $this->_channel->queue_delete($queue, $if_unused, $if_empty, $nowait, $ticket);
 	}
 	
 	/**
-	 * 
+	 * Consume queue
+     *
 	 * @param string $queue
 	 * @param string $consumer_tag
 	 * @param string $no_local
@@ -201,16 +266,26 @@ class RabbitMQ implements QueueInterface
 	 * @param string $callback
 	 * @param string $ticket
 	 */
-	public function queueConsume($queue, $consumer_tag = "", $no_local = false, $no_ack = false, $exclusive = false, $nowait = false, $callback = null, $ticket = null) 
-	{
+	public function queueConsume(
+        $queue,
+        $consumer_tag = "",
+        $no_local = false,
+        $no_ack = false,
+        $exclusive = false,
+        $nowait = false,
+        $callback = null,
+        $ticket = null
+    ) {
 		return $this->_channel->basic_consume($queue, $consumer_tag, $no_local, $no_ack, $exclusive, $nowait, $callback, $ticket);
 	}
 	
 	/**
-	 * 
+	 * Get message from queue
+     *
 	 * @param string $queue
 	 * @param string $no_ack
 	 * @param string $ticket
+     * @return
 	 */
 	public function queueGet($queue, $no_ack = false, $ticket = null)
 	{
@@ -228,7 +303,8 @@ class RabbitMQ implements QueueInterface
 	}
 
 	/**
-	 * 
+	 * Purge queue
+     *
 	 * @param string $queue
 	 * @param string $nowait
 	 * @param string $ticket

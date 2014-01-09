@@ -2,18 +2,17 @@
 namespace QueueCenter\Storage;
 
 /**
- *
- *
+ * Class Exchange
  *
  * @category   Storage
  * @package    QueueCenter
  */
 class Exchange
-{	
-	/**
-	 * Storage adapter
-	 * @var CActiveRecord
-	 */
+{
+    /**
+     * Exchange storage adatepr
+     * @var \QueueCenter\Storage\AdapterInterface
+     */
 	protected $_adapter;
 
 	/**
@@ -35,7 +34,7 @@ class Exchange
 	/**
 	 * Return storage adapter
 	 *
-	 * @return CActiveRecord
+	 * @return \QueueCenter\Storage\AdapterInterface
 	 */
 	public function getAdapter()
 	{
