@@ -63,6 +63,10 @@ class Exchange
 	{
         $this->_name = $name;
 		$this->_config = $config;
+        
+        if (isset($this->_config['exchangePrefix'])) {
+            $this->_prefix = $this->_config['exchangePrefix'];
+        }
 	}
 	
 	/**
@@ -88,9 +92,6 @@ class Exchange
 			}
             if (isset($this->_config['exchangeType'])) {
                 $this->_type = $this->_config['exchangeType'];
-            }
-            if (isset($this->_config['exchangePrefix'])) {
-                $this->_prefix = $this->_config['exchangePrefix'];
             }
 			$this->_declare();
 		}

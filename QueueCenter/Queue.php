@@ -66,6 +66,10 @@ class Queue
 	{
         $this->_name = $name;
 		$this->_config = $config;
+
+        if (isset($this->_config['queuePrefix'])) {
+            $this->_prefix = $this->_config['queuePrefix'];
+        }
 	}
 	
 	/**
@@ -89,9 +93,6 @@ class Queue
 					$this->_adapter = new \QueueCenter\Adapter\RabbitMQ($connection);
 					break;
 			}
-            if (isset($this->_config['queuePrefix'])) {
-                $this->_prefix = $this->_config['queuePrefix'];
-            }
 			
 			$this->_declare();
 		}
@@ -134,7 +135,7 @@ class Queue
 	}
 	
 	/**
-	 * Un\bBind exchange from queue
+	 * Unbind exchange from queue
 	 *
 	 * @param string $exchange
 	 * @param string $routingKey
