@@ -15,6 +15,12 @@ class Exchange
 	 */
 	protected $_name;
 
+    /**
+     * Exchange name prefix
+     * @var string
+     */
+    protected $_prefix = null;
+
 	/**
 	 * Queue adapter
 	 * @var \QueueCenter\Adapter\RabbitMQ
@@ -32,12 +38,6 @@ class Exchange
 	 * @param string
 	 */
 	protected $_type = 'topic';
-
-    /**
-     * Exchange name prefix
-     * @var string
-     */
-    protected $_prefix = null;
 	
 	/**
 	 * Queue options
@@ -63,7 +63,7 @@ class Exchange
 	{
         $this->_name = $name;
 		$this->_config = $config;
-        
+
         if (isset($this->_config['exchangePrefix'])) {
             $this->_prefix = $this->_config['exchangePrefix'];
         }
