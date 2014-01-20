@@ -32,6 +32,12 @@ class Exchange
 	 * @param string
 	 */
 	protected $_type = 'topic';
+
+    /**
+     * Exchange name prefix
+     * @var string
+     */
+    protected $_prefix = null;
 	
 	/**
 	 * Queue options
@@ -55,7 +61,7 @@ class Exchange
 	 */
 	public function __construct($name, $config)
 	{
-		$this->_name = $name;
+		$exchangeName = $name;
 		$this->_config = $config;
 	}
 	
@@ -83,6 +89,9 @@ class Exchange
             if (isset($this->_config['exchangeType'])) {
                 $this->_type = $this->_config['exchangeType'];
             }
+            if (isset($this->_config['exchangePrefix'])) {
+                $this->_prefix = $this->_config['exchangePrefix'];
+            }
 			$this->_declare();
 		}
 	
@@ -94,7 +103,8 @@ class Exchange
 	 */
 	private function _declare()
 	{
-		$this->getAdapter()->exchangeDeclare($this->_name, $this->_type, $this->_options['passive'], $this->_options['durable'], $this->_options['auto_delete'], $this->_options['internal'], $this->_options['nowait'], $this->_options['arguments'], $this->_options['ticket']);
+        $exchangeName = $this->getName();
+		$this->getAdapter()->exchangeDeclare($exchangeName, $this->_type, $this->_options['passive'], $this->_options['durable'], $this->_options['auto_delete'], $this->_options['internal'], $this->_options['nowait'], $this->_options['arguments'], $this->_options['ticket']);
 	}
 	
 	/**
@@ -107,10 +117,21 @@ class Exchange
 	public function publish($message, $routingKey = "*")
 	{
 		$message = $this->_filterMessage($message);
-		$this->getAdapter()->exchangePublish($message, $this->_name, $routingKey, $mandatory = false, $immediate = false, $this->_options['ticket']);
+        $exchangeName = $this->getName();
+		$this->getAdapter()->exchangePublish($message, $exchangeName, $routingKey, $mandatory = false, $immediate = false, $this->_options['ticket']);
 				
 		return $this;
 	}
+
+    /**
+     * Return exchange name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return ($this->_prefix) ? $this->_prefix."_".$this->_name : $this->_name;
+    }
 	
 	/**
 	 * Filter exchange message, if message not string serialize it

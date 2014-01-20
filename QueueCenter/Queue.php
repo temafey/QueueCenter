@@ -18,6 +18,12 @@ class Queue
 	 * @var string
 	 */
 	protected $_name;
+
+    /**
+     * Queue name prefix
+     * @var string
+     */
+    protected $_prefix = null;
 	
 	/**
 	 * Queue adapter
@@ -58,7 +64,7 @@ class Queue
 	 */
 	public function __construct($name, $config)
 	{
-		$this->_name = $name;
+		$queueName = $name;
 		$this->_config = $config;
 	}
 	
@@ -83,6 +89,9 @@ class Queue
 					$this->_adapter = new \QueueCenter\Adapter\RabbitMQ($connection);
 					break;
 			}
+            if (isset($this->_config['queuePrefix'])) {
+                $this->_prefix = $this->_config['queuePrefix'];
+            }
 			
 			$this->_declare();
 		}
@@ -95,8 +104,19 @@ class Queue
 	 */
 	private function _declare()
 	{
-		$this->getAdapter()->queueDeclare($this->_name, $this->_options['passive'], $this->_options['durable'], $this->_options['exclusive'], $this->_options['auto_delete'], $this->_options['nowait'],  $this->_options['arguments'], $this->_options['ticket']);
+        $queueName = $this->getName();
+		$this->getAdapter()->queueDeclare($queueName, $this->_options['passive'], $this->_options['durable'], $this->_options['exclusive'], $this->_options['auto_delete'], $this->_options['nowait'],  $this->_options['arguments'], $this->_options['ticket']);
 	}
+
+    /**
+     * Return queue name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return ($this->_prefix) ? $this->_prefix."_".$this->_name : $this->_name;
+    }
 	
 	/**
 	 * Bind exchange to queue
@@ -107,7 +127,8 @@ class Queue
 	 */
 	public function bind($exchange, $routingKey = "")
 	{
-		$this->getAdapter()->queueBind($this->_name, $exchange, $routingKey, $this->_options['nowait'], $this->_options['arguments'], $this->_options['ticket']);
+        $queueName = $this->getName();
+		$this->getAdapter()->queueBind($queueName, $exchange, $routingKey, $this->_options['nowait'], $this->_options['arguments'], $this->_options['ticket']);
 		
 		return $this;
 	}
@@ -121,7 +142,8 @@ class Queue
 	 */
 	public function unbind($exchange, $routingKey = "")
 	{
-		$this->getAdapter()->queueUnBind($this->_name, $exchange, $routingKey, $this->_options['arguments'], $this->_options['ticket']);
+        $queueName = $this->getName();
+		$this->getAdapter()->queueUnBind($queueName, $exchange, $routingKey, $this->_options['arguments'], $this->_options['ticket']);
 		
 		return $this;
 	}
@@ -141,7 +163,8 @@ class Queue
 	public function consume($msgAmount)
 	{
 		$this->_target = $msgAmount;
-		$this->getAdapter()->queueConsume($this->_name, $this->_getConsumerTag(), false, false, $this->_options['exclusive'], $this->_options['nowait'], array($this, 'processMessage'), $this->_options['ticket']);	
+        $queueName = $this->getName();
+		$this->getAdapter()->queueConsume($queueName, $this->_getConsumerTag(), false, false, $this->_options['exclusive'], $this->_options['nowait'], array($this, 'processMessage'), $this->_options['ticket']);	
 		while (count($this->_adapter->getChannel()->callbacks)) {
 			$this->_adapter->getChannel()->wait();
 		}
@@ -202,7 +225,8 @@ class Queue
 	 */
 	public function get()
 	{
-		return $this->getAdapter()->queueGet($this->_name);
+        $queueName = $this->getName();
+		return $this->getAdapter()->queueGet($queueName);
 	}
 	
 	/**
