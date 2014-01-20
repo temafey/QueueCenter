@@ -61,7 +61,7 @@ class Exchange
 	 */
 	public function __construct($name, $config)
 	{
-		$exchangeName = $name;
+        $this->_name = $name;
 		$this->_config = $config;
 	}
 	

@@ -64,7 +64,7 @@ class Queue
 	 */
 	public function __construct($name, $config)
 	{
-		$queueName = $name;
+        $this->_name = $name;
 		$this->_config = $config;
 	}
 	
