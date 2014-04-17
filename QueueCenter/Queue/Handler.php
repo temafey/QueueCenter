@@ -111,6 +111,7 @@ class Handler
 	 */
 	protected function _consumeQueueMessages($queue)
 	{
+        unset($this->_config['queuePrefix']);
 		$queueAdapter = new Queue($queue['name'], $this->_config);
 		while(($message = $queueAdapter->get())) {
 			if ($this->_handle($queue['user_id'], $queue['id'], $message)) {

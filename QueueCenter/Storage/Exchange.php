@@ -15,12 +15,6 @@ class Exchange
      */
 	protected $_adapter;
 
-    /**
-     * Queue name prefix
-     * @var string
-     */
-    protected $_prefix = null;
-
 
     /**
 	 * Queue config
@@ -36,22 +30,7 @@ class Exchange
 	public function __construct($config)
 	{
 		$this->_config = $config;
-
-        if (isset($this->_config['exchangePrefix'])) {
-            $this->_prefix = $this->_config['exchangePrefix'];
-        }
 	}
-
-    /**
-     * Return exchange name
-     *
-     * @param string $name
-     * @return string
-     */
-    public function getFullName($name)
-    {
-        return ($this->_prefix) ? $this->_prefix."_".$name : $name;
-    }
 	
 	/**
 	 * Return storage adapter
@@ -81,8 +60,6 @@ class Exchange
 		if ($this->getByName($name)) {
 			return false;
 		}
-
-        $name = $this->getFullName($name);
 		$result = $this->_adapter->add(array('user_id' => $userId, 'name' => $name));
 
 		return $result;
@@ -112,7 +89,6 @@ class Exchange
 	 */
 	public function getByName($name)
 	{
-        $name = $this->getFullName($name);
 		$adapter = $this->getAdapter();
 		if (!($exchange = $adapter->get(array("name" => $name)))) {
 			return false;
