@@ -149,11 +149,20 @@ class Queue
 		return $this;
 	}
 
-	private $_consumed = 0;
-	
-	private $_target = 0;
-	
-	protected $_callback;
+    /**
+     * @var int
+     */
+    private $_consumed = 0;
+
+    /**
+     * @var int
+     */
+    private $_target = 0;
+
+    /**
+     * @var closure
+     */
+    protected $_callback;
 	
 	/**
 	 * Consume messages
