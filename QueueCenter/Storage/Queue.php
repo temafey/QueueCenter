@@ -21,6 +21,12 @@ class Queue
      */
 	protected $_adapterQueueRouters;
 
+    /**
+     * Queue name prefix
+     * @var string
+     */
+    protected $_prefix = null;
+
 	/**
 	 * Queue config
 	 * @param \stdClass
@@ -35,7 +41,26 @@ class Queue
 	public function __construct($config)
 	{
 		$this->_config = $config;
+
+        if (isset($this->_config['queuePrefix'])) {
+            $this->_prefix = $this->_config['queuePrefix'];
+        }
 	}
+
+    /**
+     * Return queue name
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getFullName($name)
+    {
+        if ($this->_prefix && strpos($name, $this->_prefix) !== 0) {
+            $name = $this->_prefix."_".$name;
+        }
+
+        return $name;
+    }
 	
 	/**
 	 * Return queue storage adapter
@@ -84,6 +109,7 @@ class Queue
 			return false;
 		}
 
+        $name = $this->getFullName($name);
 		return $this->_adapterQueue->add(["user_id" => $userId, "name" => $name]);
 	}
 	
@@ -196,6 +222,7 @@ class Queue
 	 */
 	public function getByName($name)
 	{
+        $name = $this->getFullName($name);
 		$adapter = $this->getAdapterQueue();
 		if (!($queue = $adapter->get(array("name" => $name)))) {
 			return false;
