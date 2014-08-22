@@ -144,10 +144,9 @@ class Queue
 		if (!($queue = $this->getById($queueId))) {
 			return false;
 		}
-		$this->removeQueueRouter($queueId);		
-		$this->_adapterQueue->remove($queue['id']);
-		
-		return true;
+		$this->removeQueueRouter($queueId);
+
+		return $this->_adapterQueue->remove($queue['id']);
 	}
 	
 	/**

@@ -106,7 +106,7 @@ class Queue
 	private function _declare()
 	{
         $queueName = $this->getName();
-		$this->getAdapter()->queueDeclare($queueName, $this->_options['passive'], $this->_options['durable'], $this->_options['exclusive'], $this->_options['auto_delete'], $this->_options['nowait'],  $this->_options['arguments'], $this->_options['ticket']);
+		return $this->getAdapter()->queueDeclare($queueName, $this->_options['passive'], $this->_options['durable'], $this->_options['exclusive'], $this->_options['auto_delete'], $this->_options['nowait'],  $this->_options['arguments'], $this->_options['ticket']);
 	}
 
     /**
@@ -129,9 +129,7 @@ class Queue
 	public function bind($exchange, $routingKey = "")
 	{
         $queueName = $this->getName();
-		$this->getAdapter()->queueBind($queueName, $exchange, $routingKey, $this->_options['nowait'], $this->_options['arguments'], $this->_options['ticket']);
-		
-		return $this;
+		return $this->getAdapter()->queueBind($queueName, $exchange, $routingKey, $this->_options['nowait'], $this->_options['arguments'], $this->_options['ticket']);
 	}
 	
 	/**
@@ -144,10 +142,21 @@ class Queue
 	public function unbind($exchange, $routingKey = "")
 	{
         $queueName = $this->getName();
-		$this->getAdapter()->queueUnBind($queueName, $exchange, $routingKey, $this->_options['arguments'], $this->_options['ticket']);
-		
-		return $this;
+		return $this->getAdapter()->queueUnBind($queueName, $exchange, $routingKey, $this->_options['arguments'], $this->_options['ticket']);
 	}
+
+    /**
+     * Delete queue
+     *
+     * @param string $exchange
+     * @param string $routingKey
+     * @return \QueueCenter\Queue
+     */
+    public function delete()
+    {
+        $queueName = $this->getName();
+        return $this->getAdapter()->queueDelete($queueName);
+    }
 
     /**
      * @var int
@@ -345,6 +354,36 @@ class Queue
 	
 		return true;
 	}
+
+    /**
+     * Delete user queue
+     *
+     * @param mixed $config
+     * @param integer $userId
+     * @param string $name
+     * @param integer $exchangeId
+     * @param string $routingKey
+     * @return boolean
+     */
+    public static function deleteUserQueue($config, $userId, $name)
+    {
+        $storage = new Storage\Queue($config);
+        $fullName = self::generateUserQueueName($userId, $name);
+        $queue = $storage->getByName($fullName);
+        $userQueueExchangeRouters = $storage->getQueueRouters($queue['id']);
+        foreach ($userQueueExchangeRouters as $queueExchangeRouter) {
+            if (!static::unbindUserQueue($config, $userId, $name, $queueExchangeRouter['exchange_id'], $queueExchangeRouter['router_key'])) {
+                //return false;
+            }
+        }
+
+        $queue = new self($fullName, $config);
+        if (!$queue->delete()) {
+            return false;
+        }
+
+        return $storage->removeQueue($queue['id']);
+    }
 	
 	/**
 	 * Return queue name
